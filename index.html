@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Happy Birthday Aman</title>
+<title>Happy Birthday Anjani</title>
 
 <style>
 body {
@@ -86,6 +86,38 @@ h2 {
     animation: fadeIn 2s ease-in-out;
 }
 
+.start-btn {
+    background: linear-gradient(45deg, #ff4e8a, #ff9a9e);
+    border: none;
+    padding: 15px 35px;
+    font-size: 20px;
+    color: white;
+    border-radius: 50px;
+    cursor: pointer;
+    font-weight: bold;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    transition: all 0.3s ease;
+    animation: pulse 2s infinite;
+}
+
+/* Hover effect */
+.start-btn:hover {
+    transform: scale(1.08);
+    box-shadow: 0 12px 25px rgba(0,0,0,0.3);
+}
+
+/* Click effect */
+.start-btn:active {
+    transform: scale(0.95);
+}
+
+/* Pulse animation */
+@keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(255, 78, 138, 0.6); }
+    70% { box-shadow: 0 0 0 15px rgba(255, 78, 138, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(255, 78, 138, 0); }
+}
+
 @keyframes fadeIn {
     from { opacity: 0; }
     to { opacity: 1; }
@@ -103,7 +135,10 @@ canvas {
 <body>
 
 <div class="container">
-    <h1>🎉 Happy Birthday Aman</h1>
+    <h1>🎉 Happy Birthday Anjani</h1>
+    <button onclick="startBlowDetection()" class="start-btn">
+        Tap Here First 💕
+    </button>
     <h2>Make a wish and blow the candle  💨🕯</h2>
 
     <div class="cake">
@@ -130,10 +165,16 @@ canvas {
 
 <script>
 // 💨 Microphone Blow Detection
-async function setupMic() {
+let blowStarted = false;
+
+async function startBlowDetection() {
+    if (blowStarted) return;
+    blowStarted = true;
+
     try {
         const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        const audioContext = new AudioContext();
+
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
         const mic = audioContext.createMediaStreamSource(stream);
         const analyser = audioContext.createAnalyser();
         mic.connect(analyser);
@@ -144,17 +185,20 @@ async function setupMic() {
             analyser.getByteFrequencyData(data);
             let volume = data.reduce((a,b)=>a+b)/data.length;
 
-            if (volume > 65) { // sensitivity level
+            if (volume > 45) {   // 🔥 Lower threshold for phone
                 blowCandle();
             }
+
             requestAnimationFrame(detectBlow);
         }
 
         detectBlow();
+
     } catch (err) {
-        alert("Please allow microphone access 💕");
+        alert("Please allow microphone access 💖");
     }
 }
+
 
 function blowCandle() {
     const flame = document.getElementById("flame");
@@ -165,7 +209,7 @@ function blowCandle() {
     document.getElementById("bgMusic").play();
 }
 
-setupMic();
+// setupMic();
 
 
 // 🎊 Confetti Animation (your original)
